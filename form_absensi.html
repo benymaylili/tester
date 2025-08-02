@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Absensi</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; }
+    form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    input, select, textarea, button { width: 100%; padding: 10px; margin: 8px 0; border-radius: 4px; border: 1px solid #ccc; }
+    button { background-color: #4CAF50; color: white; border: none; }
+    button:hover { background-color: #45a049; }
+  </style>
+</head>
+<body>
+
+  <h2 style="text-align:center">Form Absensi Siswa</h2>
+  <form id="absensiForm">
+    <input type="text" id="nama" placeholder="Nama" required>
+    <input type="text" id="kelas" placeholder="Kelas" required>
+    <input type="date" id="tanggal" required>
+    <select id="kehadiran" required>
+      <option value="">--Pilih Kehadiran--</option>
+      <option value="Hadir">Hadir</option>
+      <option value="Izin">Izin</option>
+      <option value="Sakit">Sakit</option>
+      <option value="Alfa">Alfa</option>
+    </select>
+    <textarea id="catatan" placeholder="Catatan"></textarea>
+    <button type="submit">Kirim</button>
+  </form>
+
+  <p id="status" style="text-align:center; font-weight: bold;"></p>
+
+  <script>
+    document.getElementById('absensiForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const data = {
+        nama: document.getElementById('nama').value,
+        kelas: document.getElementById('kelas').value,
+        tanggal: document.getElementById('tanggal').value,
+        kehadiran: document.getElementById('kehadiran').value,
+        catatan: document.getElementById('catatan').value
+      };
+
+      fetch('https://script.google.com/macros/s/AKfycbzZumhwkhCzWldBku8PtbxrjmkU6I36epJPmueLgFIjLiz1KroUWflCgVpccOVbTpBdSw/exec', {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      .then(res => res.json())
+      .then(res => {
+        document.getElementById('status').textContent = "Status: " + res.status;
+        if(res.status === "sukses") {
+          document.getElementById('absensiForm').reset();
+        }
+      })
+      .catch(err => {
+        document.getElementById('status').textContent = "Terjadi kesalahan: " + err;
+      });
+    });
+  </script>
+
+</body>
+</html>
